@@ -1303,4 +1303,16 @@ Il y a une faible chance de pertes de données, donc s.v.p. assurez-vous d'avoir
   <data name="ExtractingToTemporaryFolder" xml:space="preserve">
     <value>Extraction dans le répertoire temporaire</value>
   </data>
+  <data name="CreatingDemos" xml:space="preserve">
+    <value>Création des démos depuis les points de suspension...</value>
+  </data>
+  <data name="CreatingDemoFor" xml:space="preserve">
+    <value>Création de la démo de {0}...</value>
+  </data>
+  <data name="NoSuspendPointForDemo" xml:space="preserve">
+    <value>Aucune démo n'a pu être créée pour les jeux suivants. Jouez au moins une minute à chaque jeu sur la console avec l'émulateur d'origine (canoe), créez un point de suspension, puis réessayez :</value>
+  </data>
+  <data name="DemosCreated" xml:space="preserve">
+    <value>Démos créées. Synchronisez vos jeux pour les envoyer sur la console.</value>
+  </data>
 </root>

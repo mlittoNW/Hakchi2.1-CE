@@ -1201,6 +1201,7 @@ namespace com.clusterrr.hakchi_gui
 
                     deleteSelectedGamesToolStripMenuItem.Enabled =
                     repairGamesToolStripMenuItem.Enabled = !game.IsOriginalGame;
+                    createDemoFromSuspendPointToolStripMenuItem.Enabled = game.SupportsDemoRecording;
                     selectEmulationCoreToolStripMenuItem.Enabled = true;
 
                     compressSelectedGamesToolStripMenuItem.Enabled = game.CompressPossible().Count() > 0;
@@ -1226,6 +1227,7 @@ namespace com.clusterrr.hakchi_gui
                 downloadBoxArtForSelectedGamesToolStripMenuItem.Enabled =
                 scanForNewBoxArtForSelectedGamesToolStripMenuItem.Enabled =
                 deleteSelectedGamesBoxArtToolStripMenuItem.Enabled =
+                createDemoFromSuspendPointToolStripMenuItem.Enabled =
                 compressSelectedGamesToolStripMenuItem.Enabled =
                 decompressSelectedGamesToolStripMenuItem.Enabled =
                 deleteSelectedGamesToolStripMenuItem.Enabled =
@@ -1249,6 +1251,7 @@ namespace com.clusterrr.hakchi_gui
                 downloadBoxArtForSelectedGamesToolStripMenuItem.Enabled =
                 scanForNewBoxArtForSelectedGamesToolStripMenuItem.Enabled =
                 deleteSelectedGamesBoxArtToolStripMenuItem.Enabled =
+                createDemoFromSuspendPointToolStripMenuItem.Enabled =
                 compressSelectedGamesToolStripMenuItem.Enabled =
                 decompressSelectedGamesToolStripMenuItem.Enabled =
                 deleteSelectedGamesToolStripMenuItem.Enabled =
@@ -3111,6 +3114,17 @@ internal static
                     Tasks.MessageForm.Show(Resources.Wow, Resources.Done, Resources.sign_check);
             if (ConfigIni.Instance.ShowGamesWithoutCoverArt)
                 LoadGames(false);
+        }
+
+        private void createDemoFromSuspendPointToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!hakchi.Shell.IsOnline && !WaitingShellForm.WaitForDevice(this))
+                return;
+
+            var task = new Tasks.GameTask();
+            if (groupTaskWithSelected(task, task.CreateDemosFromSuspendPoints, false))
+                if (!ConfigIni.Instance.DisablePopups)
+                    Tasks.MessageForm.Show(Resources.Wow, Resources.DemosCreated, Resources.sign_check);
         }
 
         private void deleteSelectedGamesBoxArtToolStripMenuItem_Click(object sender, EventArgs e)

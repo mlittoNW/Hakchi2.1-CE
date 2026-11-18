@@ -1253,6 +1253,13 @@ namespace com.clusterrr.hakchi_gui
         private bool SupportsMyPlayDemo =>
             IsSnesConsole && (desktop.Exec ?? string.Empty).Contains("clover-canoe-shvc");
 
+        // Menu demos are canoe input recordings stored as autoplay/{A..E}.inputs (+ .inputs.state).
+        // They can be built from the rollback data of a suspend point, which only canoe produces.
+        public const string AutoplayDirectoryName = "autoplay";
+        public const int DemoSequenceCount = 5;
+        public bool SupportsDemoRecording => !IsOriginalGame && SupportsMyPlayDemo;
+        public string AutoplayPath => Path.Combine(basePath, AutoplayDirectoryName);
+
         // --- adjusted desktop file for export/upload
         private DesktopFile GetAdjustedDesktopFile(string mediaGamePath, string iconPath, string profilePath)
         {

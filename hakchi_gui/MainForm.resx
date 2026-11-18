@@ -1086,6 +1086,15 @@
   <data name="deleteSelectedGamesBoxArtToolStripMenuItem.Text" xml:space="preserve">
     <value>Delete box art of selected games</value>
   </data>
+  <data name="createDemoFromSuspendPointToolStripMenuItem.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="createDemoFromSuspendPointToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>284, 22</value>
+  </data>
+  <data name="createDemoFromSuspendPointToolStripMenuItem.Text" xml:space="preserve">
+    <value>Create demo from last suspend point</value>
+  </data>
   <data name="toolStripMenuItem15.Size" type="System.Drawing.Size, System.Drawing">
     <value>281, 6</value>
   </data>
@@ -4390,6 +4399,12 @@
     <value>deleteSelectedGamesBoxArtToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;deleteSelectedGamesBoxArtToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;createDemoFromSuspendPointToolStripMenuItem.Name" xml:space="preserve">
+    <value>createDemoFromSuspendPointToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;createDemoFromSuspendPointToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;toolStripMenuItem15.Name" xml:space="preserve">

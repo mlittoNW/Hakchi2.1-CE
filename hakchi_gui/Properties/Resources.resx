@@ -1716,4 +1716,16 @@ Are you sure?</value>
   <data name="ExtractingToTemporaryFolder" xml:space="preserve">
     <value>Extracting to temporary folder</value>
   </data>
+  <data name="CreatingDemos" xml:space="preserve">
+    <value>Creating demos from suspend points...</value>
+  </data>
+  <data name="CreatingDemoFor" xml:space="preserve">
+    <value>Creating demo for {0}...</value>
+  </data>
+  <data name="NoSuspendPointForDemo" xml:space="preserve">
+    <value>No demo could be created for the following games. Play each game on the console with the stock emulator (canoe) for at least one minute, save a suspend point, then try again:</value>
+  </data>
+  <data name="DemosCreated" xml:space="preserve">
+    <value>Demos created. Synchronize your games to send them to the console.</value>
+  </data>
 </root>

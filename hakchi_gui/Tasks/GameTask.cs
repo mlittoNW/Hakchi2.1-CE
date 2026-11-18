@@ -199,6 +199,100 @@ namespace com.clusterrr.hakchi_gui.Tasks
             return Tasker.Conclusion.Success;
         }
 
+        public Tasker.Conclusion CreateDemosFromSuspendPoints(Tasker tasker, Object SyncObject = null)
+        {
+            tasker.SetTitle(Resources.CreatingDemos);
+            tasker.SetStatusImage(Resources.sign_down);
+            tasker.SetProgress(-1, -1, Tasker.State.Running, Resources.CreatingDemos);
+
+            var skipped = new List<string>();
+            int i = 0;
+            foreach (NesApplication game in Games)
+            {
+                tasker.SetStatus(string.Format(Resources.CreatingDemoFor, game.Name));
+                if (!game.SupportsDemoRecording || !CreateDemoFromSuspendPoint(game))
+                    skipped.Add(game.Name);
+                tasker.SetProgress(++i, Games.Count);
+            }
+
+            if (skipped.Count > 0)
+            {
+                tasker.ShowMessage(Resources.CreatingDemos,
+                    Resources.NoSuspendPointForDemo + "\r\n\r\n" + string.Join("\r\n", skipped),
+                    Resources.sign_info);
+            }
+            return skipped.Count < Games.Count ? Tasker.Conclusion.Success : Tasker.Conclusion.Error;
+        }
+
+        // Builds the game's autoplay folder from the rollback data of its most recent suspend point.
+        // Each rollback step is a state snapshot (N.break) plus the inputs recorded from it (N.inputs),
+        // which is exactly what canoe replays for menu demos (X.inputs.state + X.inputs).
+        private static bool CreateDemoFromSuspendPoint(NesApplication game)
+        {
+            string profilePath = $"/var/lib/clover/profiles/0/{game.Code}";
+            string rollbackPath = hakchi.Shell.ExecuteSimple(
+                $"ls -dt \"{profilePath}\"/suspendpoint*/rollback 2>/dev/null | head -n 1", 5000).Trim();
+            if (string.IsNullOrEmpty(rollbackPath))
+                return false;
+
+            var indexes = new List<int>();
+            string listing = hakchi.Shell.ExecuteSimple(
+                $"cd \"{rollbackPath}\" && for f in *.inputs; do n=\"${{f%.inputs}}\"; [ -f \"$n.break\" ] && echo \"$n\"; done", 5000);
+            foreach (var line in listing.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                int index;
+                if (int.TryParse(line.Trim(), out index))
+                    indexes.Add(index);
+            }
+            if (indexes.Count == 0)
+                return false;
+
+            // keep the most recent steps, oldest first
+            indexes.Sort();
+            indexes = indexes.Skip(Math.Max(0, indexes.Count - NesApplication.DemoSequenceCount)).ToList();
+
+            // download next to the game first, so a failure never leaves a half-written autoplay folder
+            string autoplayPath = game.AutoplayPath;
+            string stagingPath = autoplayPath + ".new";
+            Shared.EnsureEmptyDirectory(stagingPath);
+            try
+            {
+                for (int s = 0; s < NesApplication.DemoSequenceCount; s++)
+                {
+                    string name = ((char)('A' + s)).ToString() + ".inputs";
+                    if (s < indexes.Count)
+                    {
+                        DownloadFile($"{rollbackPath}/{indexes[s]}.break", Path.Combine(stagingPath, name + ".state"));
+                        DownloadFile($"{rollbackPath}/{indexes[s]}.inputs", Path.Combine(stagingPath, name));
+                    }
+                    else
+                    {
+                        // the menu may pick any of A..E, so short recordings are repeated to fill every slot
+                        string source = ((char)('A' + (s % indexes.Count))).ToString() + ".inputs";
+                        File.Copy(Path.Combine(stagingPath, source + ".state"), Path.Combine(stagingPath, name + ".state"));
+                        File.Copy(Path.Combine(stagingPath, source), Path.Combine(stagingPath, name));
+                    }
+                }
+
+                if (Directory.Exists(autoplayPath))
+                    Directory.Delete(autoplayPath, true);
+                Directory.Move(stagingPath, autoplayPath);
+            }
+            finally
+            {
+                if (Directory.Exists(stagingPath))
+                    Directory.Delete(stagingPath, true);
+            }
+            Trace.WriteLine($"Demo created for {game.Name} ({game.Code}) from {rollbackPath}");
+            return true;
+        }
+
+        private static void DownloadFile(string remotePath, string localPath)
+        {
+            using (var file = File.Create(localPath))
+                hakchi.Shell.Execute($"cat \"{remotePath}\"", null, file, null, 30000, true);
+        }
+
         public Tasker.Conclusion CompressGames(Tasker tasker, Object SyncObject = null)
         {
             tasker.SetTitle(Resources.CompressingGames);

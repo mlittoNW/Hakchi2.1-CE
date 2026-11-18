@@ -3650,6 +3650,42 @@ namespace com.clusterrr.hakchi_gui.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creating demos from suspend points....
+        /// </summary>
+        internal static string CreatingDemos {
+            get {
+                return ResourceManager.GetString("CreatingDemos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Creating demo for {0}....
+        /// </summary>
+        internal static string CreatingDemoFor {
+            get {
+                return ResourceManager.GetString("CreatingDemoFor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No demo could be created for the following games. Play each game on the console with the stock emulator (canoe) for at least one minute, save a suspend point, then try again:.
+        /// </summary>
+        internal static string NoSuspendPointForDemo {
+            get {
+                return ResourceManager.GetString("NoSuspendPointForDemo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Demos created. Synchronize your games to send them to the console..
+        /// </summary>
+        internal static string DemosCreated {
+            get {
+                return ResourceManager.GetString("DemosCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Removing cover art....
         /// </summary>
         internal static string RemovingCovers {

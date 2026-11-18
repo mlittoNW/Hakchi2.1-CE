@@ -178,6 +178,7 @@
             this.scanForNewBoxArtForSelectedGamesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadBoxArtForSelectedGamesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteSelectedGamesBoxArtToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.createDemoFromSuspendPointToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem15 = new System.Windows.Forms.ToolStripSeparator();
             this.archiveSelectedGamesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.compressSelectedGamesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1328,6 +1329,7 @@
             this.scanForNewBoxArtForSelectedGamesToolStripMenuItem,
             this.downloadBoxArtForSelectedGamesToolStripMenuItem,
             this.deleteSelectedGamesBoxArtToolStripMenuItem,
+            this.createDemoFromSuspendPointToolStripMenuItem,
             this.toolStripMenuItem15,
             this.archiveSelectedGamesToolStripMenuItem,
             this.compressSelectedGamesToolStripMenuItem,
@@ -1402,6 +1404,12 @@
             resources.ApplyResources(this.deleteSelectedGamesBoxArtToolStripMenuItem, "deleteSelectedGamesBoxArtToolStripMenuItem");
             this.deleteSelectedGamesBoxArtToolStripMenuItem.Name = "deleteSelectedGamesBoxArtToolStripMenuItem";
             this.deleteSelectedGamesBoxArtToolStripMenuItem.Click += new System.EventHandler(this.deleteSelectedGamesBoxArtToolStripMenuItem_Click);
+            // 
+            // createDemoFromSuspendPointToolStripMenuItem
+            // 
+            resources.ApplyResources(this.createDemoFromSuspendPointToolStripMenuItem, "createDemoFromSuspendPointToolStripMenuItem");
+            this.createDemoFromSuspendPointToolStripMenuItem.Name = "createDemoFromSuspendPointToolStripMenuItem";
+            this.createDemoFromSuspendPointToolStripMenuItem.Click += new System.EventHandler(this.createDemoFromSuspendPointToolStripMenuItem_Click);
             // 
             // toolStripMenuItem15
             // 
@@ -2309,6 +2317,7 @@
         private System.Windows.Forms.ToolStripMenuItem donateToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem compressBoxArtToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteSelectedGamesBoxArtToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem createDemoFromSuspendPointToolStripMenuItem;
         private System.Windows.Forms.Timer timerShowSelected;
         private System.Windows.Forms.ToolStripMenuItem reloadGamesToolStripMenuItem;
         private System.Windows.Forms.Button buttonExport;
