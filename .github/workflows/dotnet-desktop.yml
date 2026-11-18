@@ -21,6 +21,7 @@ jobs:
 
     env:
       solution: 'hakchi_gui.sln'
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WORKFLOW_STATUS_WEBHOOK }}
       buildPlatform: 'Any CPU'
       buildConfiguration: 'Debug'
 
@@ -29,11 +30,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: true
-
-      - name: Install NSIS
-        uses: repolevedavaj/install-nsis@v1.0.2
-        with:
-          nsis-version: '3.10'
 
       - name: Set up .NET Core SDK 3.0
         uses: actions/setup-dotnet@v4
@@ -57,9 +53,11 @@ jobs:
         env:
           GamesDBApiKey: ${{ secrets.GAMESDB_API_KEY }}
 
-      - name: Build solution
+      # Build the application on its own first, so the portable build is
+      # always produced even if the installer packaging fails.
+      - name: Build application
         run: |
-          msbuild "Installer/Installer.vcxproj" /p:SolutionDir="${{ github.workspace }}\" /p:SolutionPath="${{ github.workspace }}\${{ env.solution }}" "/p:Platform=${{ env.buildPlatform }}"
+          msbuild "hakchi_gui/hakchi_gui.csproj" /restore /p:Configuration=${{ env.buildConfiguration }} /p:SolutionDir="${{ github.workspace }}\" /p:SolutionPath="${{ github.workspace }}\${{ env.solution }}"
 
       - name: Run Hakchi Version Script
         run: |
@@ -77,7 +75,22 @@ jobs:
           name: hakchi2-ce-${{ env.displayVersion }}-portable
           path: ${{ github.workspace }}\hakchi_gui\bin\Debug\net48\
 
+      - name: Install NSIS
+        id: nsis
+        continue-on-error: true
+        run: |
+          choco install nsis -y --no-progress
+          Add-Content -Path $env:GITHUB_PATH -Value "${env:ProgramFiles(x86)}\NSIS"
+
+      - name: Build installer
+        id: installer
+        if: steps.nsis.outcome == 'success'
+        continue-on-error: true
+        run: |
+          msbuild "Installer/Installer.vcxproj" /p:SolutionDir="${{ github.workspace }}\" /p:SolutionPath="${{ github.workspace }}\${{ env.solution }}" "/p:Platform=${{ env.buildPlatform }}"
+
       - name: Upload Artifacts (Installer)
+        if: steps.installer.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: hakchi2-ce-${{ env.displayVersion }}-installer
@@ -99,6 +112,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: sarisia/actions-status-discord@v1
-        if: always()
+        if: always() && env.DISCORD_WEBHOOK != ''
         with:
           webhook: ${{ secrets.DISCORD_WORKFLOW_STATUS_WEBHOOK }}
