@@ -124,6 +124,11 @@ namespace com.clusterrr.hakchi_gui
             set { setIf(value, ref testId); }
         }
 
+        /// <summary>
+        /// Duration (in seconds) of the "My Game Play Demo" replay, as found in stock SNES desktop files.
+        /// </summary>
+        public const int MyPlayDemoTimeSeconds = 45;
+
         private string status = string.Empty;
         public string Status
         {
@@ -387,8 +392,12 @@ namespace com.clusterrr.hakchi_gui
             return true;
         }
 
-        public string GetConfig(bool snesExtraFields, bool omitProfilePathCode)
+        /// <param name="snesExtraFields">Write the SNES-specific fields found in stock desktop files (Status, MyPlayDemoTime).</param>
+        /// <param name="omitProfilePathCode">Do not append the game code to the profile path.</param>
+        /// <param name="myPlayDemo">Overrides whether MyPlayDemoTime is written; defaults to <paramref name="snesExtraFields"/>.</param>
+        public string GetConfig(bool snesExtraFields, bool omitProfilePathCode, bool? myPlayDemo = null)
         {
+            bool writeMyPlayDemo = myPlayDemo ?? snesExtraFields;
             string content = (
                 $"[Desktop Entry]\n" +
                 $"Type={this.type}\n" +
@@ -410,7 +419,7 @@ namespace com.clusterrr.hakchi_gui
                 $"SortRawTitle={this.sortRawTitle}\n" +
                 $"SortRawPublisher={this.sortRawPublisher.ToUpper()}\n" +
                 $"Copyright={this.copyright}\n" +
-                (snesExtraFields ? $"MyPlayDemoTime=45\n" : "") +
+                (writeMyPlayDemo ? $"MyPlayDemoTime={MyPlayDemoTimeSeconds}\n" : "") +
                 "\n" +
                 "[m2engage]\n" +
                 $"regionTag={this.regionTag}\n" +
@@ -424,11 +433,11 @@ namespace com.clusterrr.hakchi_gui
             return content;
         }
 
-        public Stream SaveTo(Stream stream, bool snesExtraFields = false, bool omitProfilePathCode = false)
+        public Stream SaveTo(Stream stream, bool snesExtraFields = false, bool omitProfilePathCode = false, bool? myPlayDemo = null)
         {
             if (!stream.CanWrite)
                 throw new IOException("File stream is not writable");
-            byte[] buffer = Encoding.UTF8.GetBytes(GetConfig(snesExtraFields, omitProfilePathCode));
+            byte[] buffer = Encoding.UTF8.GetBytes(GetConfig(snesExtraFields, omitProfilePathCode, myPlayDemo));
             stream.Write(buffer, 0, buffer.Length);
             stream.Position = 0;
             return stream;

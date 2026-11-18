@@ -659,11 +659,7 @@ namespace com.clusterrr.hakchi_gui
             }
 
             // save .desktop file
-            bool snesExtraFields = IsOriginalGame && (
-                ConfigIni.Instance.ConsoleType == hakchi.ConsoleType.SNES_EUR ||
-                ConfigIni.Instance.ConsoleType == hakchi.ConsoleType.SNES_USA ||
-                ConfigIni.Instance.ConsoleType == hakchi.ConsoleType.SuperFamicom);
-            desktop.Save($"{basePath}/{desktop.Code}.desktop", snesExtraFields);
+            desktop.Save($"{basePath}/{desktop.Code}.desktop", WriteSnesExtraFields);
 
             // game genie stuff
             if (!string.IsNullOrEmpty(GameGenie))
@@ -1244,6 +1240,19 @@ namespace com.clusterrr.hakchi_gui
                 prefixCode);
         }
 
+        private static bool IsSnesConsole =>
+            ConfigIni.Instance.ConsoleType == hakchi.ConsoleType.SNES_EUR ||
+            ConfigIni.Instance.ConsoleType == hakchi.ConsoleType.SNES_USA ||
+            ConfigIni.Instance.ConsoleType == hakchi.ConsoleType.SuperFamicom;
+
+        // Stock-only SNES fields (Status, MyPlayDemoTime) are kept for original games
+        private bool WriteSnesExtraFields => IsOriginalGame && IsSnesConsole;
+
+        // The menu's "My Game Play Demo" relies on MyPlayDemoTime being present in the desktop file.
+        // Only canoe (the stock emulator) can record and replay these demos, so RetroArch games are left out.
+        private bool SupportsMyPlayDemo =>
+            IsSnesConsole && (desktop.Exec ?? string.Empty).Contains("clover-canoe-shvc");
+
         // --- adjusted desktop file for export/upload
         private DesktopFile GetAdjustedDesktopFile(string mediaGamePath, string iconPath, string profilePath)
         {
@@ -1270,7 +1279,7 @@ namespace com.clusterrr.hakchi_gui
             var canonicalPath = $"./{relativeTargetPath}/{desktop.Code}/{desktop.Code}.desktop";
 
             return new ApplicationFileInfo(
-                canonicalPath, f.LastWriteTimeUtc, newdesktop.SaveTo(new MemoryStream()));
+                canonicalPath, f.LastWriteTimeUtc, newdesktop.SaveTo(new MemoryStream(), WriteSnesExtraFields, false, SupportsMyPlayDemo));
         }
 
         // --- normal sync
